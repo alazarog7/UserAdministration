@@ -5,7 +5,7 @@ import { CLIENTES } from './clientes.json';
 import { Cliente } from './cliente';
 import { Observable,throwError } from 'rxjs';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
 import { map, catchError,tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -105,5 +105,17 @@ export class ClienteService {
         return throwError(e);
       })
     );
+  }
+
+  subirFoto(archivo: File, id): Observable<HttpEvent<{}>>{
+    let formData =  new FormData();
+    formData.append("archivo",archivo);
+    formData.append("id",id);
+
+    const req = new HttpRequest('POST', `${this.urlEndPoint}/upload`,formData, {
+      reportProgress: true
+    });
+
+    return this.http.request(req);
   }
 }
